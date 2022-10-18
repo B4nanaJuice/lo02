@@ -1,12 +1,6 @@
 package fr.b4nanajuice.lo02.brutal;
 
-public enum Zone {
-
-	bu("Bibliothèque"), 
-	bde("Bureau des Etudiants"), 
-	qa("Quartiers administratifs"), 
-	hi("Halle industrielle"), 
-	hs("Halle sportive");
+public class Zone {
 	
 	private String name;
 	private Player winner;

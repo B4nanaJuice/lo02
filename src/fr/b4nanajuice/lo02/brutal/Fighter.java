@@ -165,8 +165,10 @@ public class Fighter {
 		switch (choice) {
 			case "random":
 				resp = randomFighter();
+				break;
 			default:
 				resp = train();
+				break;
 		}
 		
 		return resp;
@@ -185,9 +187,9 @@ public class Fighter {
 		Fighter[] resp = new Fighter[20];
 		Fighter temp;
 		
-		for (int i = 1; i <= 20; i++) {
+		for (int i = 0; i < 20; i++) {
 			temp = Fighter.init(i, points);
-			resp[i-1] = temp;
+			resp[i] = temp;
 			points -= temp.getPoints();
 		}
 		
@@ -206,9 +208,9 @@ public class Fighter {
 		Fighter[] resp = new Fighter[20];
 		Fighter temp;
 		
-		for (int i = 1; i <= 20; i++) {
+		for (int i = 0; i < 20; i++) {
 			temp = Fighter.random(i, points);
-			resp[i-1] = temp;
+			resp[i] = temp;
 			points -= temp.getPoints();
 		}
 		
