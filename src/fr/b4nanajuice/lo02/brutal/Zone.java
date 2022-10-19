@@ -14,6 +14,9 @@ public class Zone {
 	}
 	
 	public String getName() { return this.name; }
+	public Player getWinner() { return this.winner; }
+	public Fighter[] getP1() { return this.p1; }
+	public Fighter[] getP2() { return this.p2; }
 	
 	
 	

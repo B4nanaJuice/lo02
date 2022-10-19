@@ -25,9 +25,11 @@ public class Utils {
 	 */
 	public static boolean in(Object o, Object[] os) {
 		boolean resp = false;
-		for (Object obj: os) {
-			if (obj.equals(o)) {
-				resp = true;
+		if (os.length != 0) {
+			for (Object obj: os) {
+				if (obj.equals(o)) {
+					resp = true;
+				}
 			}
 		}
 		return resp;

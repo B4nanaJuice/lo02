@@ -57,4 +57,72 @@ public class Player {
 		
 		return resp;
 	}
+	
+	public void chooseReservists(Fighter[] fs) {
+		String s;
+		String[] i;
+		
+		do {
+			s = Utils.input("Entrez l'id des 5 combattants que vous voulez mettre réservite: ");
+			i = s.split("/");
+		} while(!validFighter(i, 5, fs));
+		
+		int id;
+		for (int v = 0; v < 5; v++) {
+			id = Integer.parseInt(i[v]) - 1;
+			this.reservists[v] = fs[id];
+			fs[id] = null;
+		}
+		
+	}
+	
+	private static boolean validFighter(String[] i, int nb, Fighter[] fs) {
+		boolean resp = true;
+		Integer[] ids = new Integer[5];
+		
+		if (nb == 0) {
+			if (i.length == 0) {
+				resp = false;
+				System.out.println("/!\\ Il faut donner au moins 1 combattant.");
+			}
+		} else {
+			if (i.length != 5) {
+				resp = false;
+				System.out.println("/!\\ Il faut donner 5 combattants.");
+			}
+		}
+		
+		if (resp) {
+			for (int v = 0; v < 5; v++) {
+				if (!Utils.isInt(i[v]) || Integer.parseInt(i[v]) <= 0 || Integer.parseInt(i[v]) > 20) {
+					resp = false;
+					System.out.println("/!\\ L'argument n°" + (v+1) + " doit être un nombre entre 1 et 20.");
+				}
+			}
+		}
+		
+		
+		if (resp) {
+			for (int v = 0; v < 5; v++) {
+				if (Utils.in(Integer.parseInt(i[v]), ids)) {
+					resp = false;
+					System.out.println("/!\\ Il faut donner 5 combattants différents.");
+				} else {
+					ids[v] = Integer.parseInt(i[v]);
+				}
+			}
+		}
+		
+		if (resp) {
+			for (int v : ids) {
+				if (fs[v-1] == null) {
+					resp = false;
+					System.out.println("/!\\ Le combattant n°" + v + " a déjà été envoyé.");
+				}
+			}
+		}
+		
+		return resp;
+		
+	}
 }

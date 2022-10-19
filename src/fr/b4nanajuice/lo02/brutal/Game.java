@@ -26,9 +26,6 @@ public class Game {
 		
 		this.players[0] = p1;
 		this.players[1] = p2;
-		
-		System.out.println("Bienvenue " + this.players[0].getName() + " !");
-		System.out.println("Bienvenue " + this.players[1].getName() + " !");
 	}
 	
 	public void initZones() {};
