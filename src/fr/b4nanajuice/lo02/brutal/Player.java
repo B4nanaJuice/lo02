@@ -58,14 +58,22 @@ public class Player {
 		return resp;
 	}
 	
+	/*
+	 * This function allows the players to choose their reservists.
+	 * The player need to input 5 different fighter's id.
+	 * The function takes as an input the list of fighters.
+	 * This function returns nothing.
+	 */
 	public void chooseReservists(Fighter[] fs) {
+		Utils.broadcast("- Choix des réservistes\n" + 
+				"- L'entrée doit se faire sous la forme id/id/id/id/id");
 		String s;
 		String[] i;
 		
 		do {
 			s = Utils.input("Entrez l'id des 5 combattants que vous voulez mettre réservite: ");
 			i = s.split("/");
-		} while(!validFighter(i, 5, fs));
+		} while(!Fighter.validFighter(i, 5, fs));
 		
 		int id;
 		for (int v = 0; v < 5; v++) {
@@ -73,56 +81,39 @@ public class Player {
 			this.reservists[v] = fs[id];
 			fs[id] = null;
 		}
-		
+		int counter = 0;		
+		for (int v = 0; v < 20; v++) {
+			if (fs[v] != null) {
+				this.fighters[counter] = fs[v];
+				counter++;
+			}
+		}
 	}
 	
-	private static boolean validFighter(String[] i, int nb, Fighter[] fs) {
-		boolean resp = true;
-		Integer[] ids = new Integer[5];
+	public void distributeFighters() {
+		String s;
+		String[] i;
 		
-		if (nb == 0) {
-			if (i.length == 0) {
-				resp = false;
-				System.out.println("/!\\ Il faut donner au moins 1 combattant.");
+		Utils.broadcast("- Distribution des combattants\n" + 
+				"- Les entrées se font sous la forme id[/id/...]");
+		
+		for (Zone z: Main.getGame().getZones()) {
+		
+			do {
+				s = Utils.input("Entrez les id des combattants à mettre dans la zone \"" + z.getName() + "\"");
+				i = s.split("/");
+			// while 
+			// IF the zone isn't the last one AND minimum 1 fighter
+			// OR IF the zone is the last AND size of remaining fighters
+			} while ((!z.equals(Main.getGame().getZones()[4]) && !Fighter.validFighter(i, 0, this.fighters)) || 
+					(z.equals(Main.getGame().getZones()[4]) && !Fighter.validFighter(i, Utils.getSize(this.fighters), this.fighters)));
+			
+			int id;
+			for (int v = 0; v < i.length; v++) {
+				id = Integer.parseInt(i[v]);
+				z.putFighter(this.fighters, v, Fighter.getFighter(id, this.fighters), this);
 			}
-		} else {
-			if (i.length != 5) {
-				resp = false;
-				System.out.println("/!\\ Il faut donner 5 combattants.");
-			}
+			
 		}
-		
-		if (resp) {
-			for (int v = 0; v < 5; v++) {
-				if (!Utils.isInt(i[v]) || Integer.parseInt(i[v]) <= 0 || Integer.parseInt(i[v]) > 20) {
-					resp = false;
-					System.out.println("/!\\ L'argument n°" + (v+1) + " doit être un nombre entre 1 et 20.");
-				}
-			}
-		}
-		
-		
-		if (resp) {
-			for (int v = 0; v < 5; v++) {
-				if (Utils.in(Integer.parseInt(i[v]), ids)) {
-					resp = false;
-					System.out.println("/!\\ Il faut donner 5 combattants différents.");
-				} else {
-					ids[v] = Integer.parseInt(i[v]);
-				}
-			}
-		}
-		
-		if (resp) {
-			for (int v : ids) {
-				if (fs[v-1] == null) {
-					resp = false;
-					System.out.println("/!\\ Le combattant n°" + v + " a déjà été envoyé.");
-				}
-			}
-		}
-		
-		return resp;
-		
 	}
 }

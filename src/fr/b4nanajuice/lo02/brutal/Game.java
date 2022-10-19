@@ -28,6 +28,15 @@ public class Game {
 		this.players[1] = p2;
 	}
 	
-	public void initZones() {};
+	/*
+	 * This function initialize the fives zones found in the game.
+	 * The function takes as an input a list of names of the different zones.
+	 * this function return nothing.
+	 */
+	public void initZones(String[] n) {
+		for (int i = 0; i < 5; i++) {
+			this.zones[i] = new Zone(n[i]);
+		}
+	};
 
 }

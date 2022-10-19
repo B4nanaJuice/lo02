@@ -18,6 +18,14 @@ public class Zone {
 	public Fighter[] getP1() { return this.p1; }
 	public Fighter[] getP2() { return this.p2; }
 	
+	public void putFighter(Fighter[] fs, int pos, int index, Player p) {
+		if (p.equals(Main.getGame().getFirstPlayer())) {
+			this.p1[pos] = fs[index];
+		} else {
+			this.p2[pos] = fs[index];
+		}
+		fs[index] = null;
+	}
 	
 	
 }

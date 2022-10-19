@@ -25,8 +25,8 @@ public class Utils {
 	 */
 	public static boolean in(Object o, Object[] os) {
 		boolean resp = false;
-		if (os.length != 0) {
-			for (Object obj: os) {
+		for (Object obj: os) {
+			if (obj != null) {
 				if (obj.equals(o)) {
 					resp = true;
 				}
@@ -61,5 +61,33 @@ public class Utils {
 			sum += nb;
 		}
 		return sum;
+	}
+	
+	/*
+	 * This function allows the user to broadcast messages.
+	 * The broadcasted message will be shown between two emptpy lines.
+	 * The function takes as an input the message.
+	 * This function returns nothing.
+	 */
+	public static void broadcast(String m) {
+		System.out.println();
+		System.out.println(m);
+		System.out.println();
+	}
+	
+	/*
+	 * This function allows the user to know the size of an array.	
+	 * This size does not include null objects.
+	 * The function takes as an input the list of objects.
+	 * This function returns the size of the list.
+	 */
+	public static int getSize(Object[] os) {
+		int resp = 0;
+		for (Object o : os) {
+			if (o != null) {
+				resp++;
+			}
+		}
+		return resp;
 	}
 }

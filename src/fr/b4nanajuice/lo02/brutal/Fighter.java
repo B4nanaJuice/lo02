@@ -74,7 +74,7 @@ public class Fighter {
 				 Integer.parseInt(i[2]) + r.getResistance(),
 				 Integer.parseInt(i[3]) + r.getConstitution(),
 				 Integer.parseInt(i[4]) + r.getInitiative(),
-				 nb, i[5], r);
+				 nb+1, i[5], r);
 		 
 		return f;
 	}
@@ -105,7 +105,7 @@ public class Fighter {
 		
 		f = new Fighter(stats[0] + r.getStrength(), stats[1] + r.getDexterity(), 
 				stats[2] + r.getResistance(), stats[3] + r.getConstitution(), 
-				stats[4] + r.getInitiative(), nb,
+				stats[4] + r.getInitiative(), nb+1,
 				s[(int) (Math.random() * 3)], r);
 		
 		return f;
@@ -183,7 +183,9 @@ public class Fighter {
 	 * This function returns a list of 20 Fighters.
 	 */
 	public static Fighter[] train() {
-		int points = 400; // Starting at 400 points to give
+		Utils.broadcast("- Initialisation des combattants\n" + 
+				"- Les entrées doivent être sous la forme force/déxtérité/résistance/constitution/initiative/stratégie");
+		int points = 400;
 		Fighter[] resp = new Fighter[20];
 		Fighter temp;
 		
@@ -217,9 +219,73 @@ public class Fighter {
 		return resp;
 	}
 	
+	/*
+	 * This function allows the user to test if the list of fighter's id is valid or not.
+	 * The function takes as an input the list of id, the number of fighters you need to enter, and the list of fighters.
+	 * This function return a boolean value.
+	 */
+	public static boolean validFighter(String[] i, int nb, Fighter[] fs) {
+		boolean resp = true;
+		Integer[] ids = new Integer[i.length];
+		
+		if (nb == 0) {
+			if (i.length == 0) {
+				resp = false;
+				System.out.println("/!\\ Il faut donner au moins 1 combattant.");
+			}
+		} else {
+			if (i.length != nb) {
+				resp = false;
+				System.out.println("/!\\ Il faut donner " + nb + " combattants.");
+			}
+		}
+		
+		if (resp) {
+			for (int v = 0; v < i.length; v++) {
+				if (!Utils.isInt(i[v]) || Integer.parseInt(i[v]) <= 0 || Integer.parseInt(i[v]) > 20) {
+					resp = false;
+					System.out.println("/!\\ L'argument n°" + (v+1) + " doit être un nombre entre 1 et 20.");
+				}
+			}
+		}
+		
+		
+		if (resp) {
+			for (int v = 0; v < i.length; v++) {
+				if (Utils.in(Integer.parseInt(i[v]), ids)) {
+					resp = false;
+					System.out.println("/!\\ Il faut donner des combattants différents.");
+				} else {
+					ids[v] = Integer.parseInt(i[v]);
+				}
+			}
+		}
+		
+		if (resp) {
+			for (int v : ids) {
+				if (getFighter(v, fs) == -1) {
+					resp = false;
+					System.out.println("/!\\ Le combattant n°" + v + " a déjà été envoyé.");
+				}
+			}
+		}
+		
+		return resp;
+	}
+	
+	public static int getFighter(int id, Fighter[] fs) {
+		int resp = -1;
+		for (int v = 0; v < fs.length; v++) {
+			if (fs[v] != null && fs[v].getId() == id) {
+				resp = v;
+			}
+		}
+		return resp;
+	}
+	
 	@Override
 	public String toString() {
-		return ("Str: " + this.strength + 
+		return (this.id + " -> Str: " + this.strength + 
 				" / Dex: " + this.dexterity + 
 				" / Res: " + this.resistance + 
 				" / Con: " + this.constitution + 
