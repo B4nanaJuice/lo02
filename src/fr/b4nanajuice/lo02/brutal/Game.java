@@ -6,6 +6,7 @@ public class Game {
 	private Zone[] zones = new Zone[5];
 	
 	public Zone[] getZones() { return this.zones; }
+	public Zone getZone(int i) { return this.zones[i]; }
 	public Player getFirstPlayer() { return this.players[0]; }
 	public Player getSecondPlayer() { return this.players[1]; }
 	
@@ -38,5 +39,19 @@ public class Game {
 			this.zones[i] = new Zone(n[i]);
 		}
 	};
+	
+	/*
+	 * This function allows the user to pick a random zone of the game.
+	 * The zone must be a zone that has for the moment no winner.
+	 * The function takes nothing as an input.
+	 * This function return the index of the zone.
+	 */
+	public int chooseZone() {
+		int resp;
+		do {
+			resp = (int) (Math.random() * 5);
+		} while (this.zones[resp].getWinner() != null);
+		return resp;
+	}
 
 }

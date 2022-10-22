@@ -1,6 +1,6 @@
 package fr.b4nanajuice.lo02.brutal;
 
-public class Fighter {
+public class Fighter implements Strategy {
 	
 	private int strength, dexterity, resistance, constitution, initiative, credits, id;
 	private String strategy;
@@ -16,6 +16,7 @@ public class Fighter {
 		this.id = id;
 		this.strategy = st;
 		this.role = ro;
+		this.credits = 30 + c;
 	}
 	
 	public int getStrength() { return this.strength; }
@@ -27,6 +28,9 @@ public class Fighter {
 	public int getId() { return this.id; }
 	public String getStrategy() { return this.strategy; }
 	public Role getRole() { return this.role; }
+	
+	public void removeCredits(int c) { this.credits -= c; }
+	public void addCredits(int c) { this.credits += c; }
 	
 	/*
 	 * This functions allow to the game to get all points given to the fighter.
@@ -273,6 +277,11 @@ public class Fighter {
 		return resp;
 	}
 	
+	/*
+	 * This function allow the user to get a fighter in a given list by its id.
+	 * The function takes the id and the fighter list as an input.
+	 * This function returns the index of the fighter.
+	 */
 	public static int getFighter(int id, Fighter[] fs) {
 		int resp = -1;
 		for (int v = 0; v < fs.length; v++) {
@@ -283,6 +292,24 @@ public class Fighter {
 		return resp;
 	}
 	
+	/*
+	 * This function allows the user to sort a fighter list by their initiative.
+	 * The function takes as an input the list of fighters.
+	 * This function return nothing.
+	 */
+	public static void sortByInitiative(Fighter[] fs) {
+		Fighter temp;
+		for (int i = 0; i < Utils.getSize(fs); i++) {
+			for (int j = 0; j < Utils.getSize(fs) - 1; j++) {
+				if (fs[j].getInitiative() > fs[j+1].getInitiative()) {
+					temp = fs[j];
+					fs[j] = fs[j+1];
+					fs[j+1] = temp;
+				}
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return (this.id + " -> Str: " + this.strength + 
@@ -291,6 +318,62 @@ public class Fighter {
 				" / Con: " + this.constitution + 
 				" / Ini: " + this.initiative + 
 				" / Strat: " + this.strategy );
+	}
+
+	@Override
+	public void attack(Fighter f) {
+		/*
+		 * Attaquer frontalement. Sur sa zone de combat, l’étudiant lance son gobi à l’ennemi qui a le moins de
+		 * crédits ECTS.
+		 * Un tirage aléatoire permet de savoir si l’attaque est réussie. Soit x ∈ [0,100] un nombre tiré
+		 * aléatoirement. Si x ∈ [0 , 40 + 3 ∗ dextérité de l′attaquant] alors l’attaque est réussie. Dans un tel
+		 * cas, l’attaqué perd E(y ∗ (1 + coefficient dégât) ∗ dégât de référence) crédits ECTS avec y ∈]0, 1]
+		 * un nombre tiré aléatoirement et E(z) la partie entière de z. 
+		 * Le dégât de référence vaut 10 et
+		 * coefficient dégât = max(0, min(100, 10 ∗ force de l'attaquant − 5 ∗ résistance de l'attaqué))
+		 */
+		if (Math.random()*100 <= 40 + 3 * this.dexterity) {
+			int coef = Math.max(0, Math.min(100, 10 * this.strength - 5 * f.getResistance()));
+			int ref = 10;
+			int c = (int) (Math.random() * (1*coef) * ref);
+			f.removeCredits(c);
+			System.out.println("Le combattant attaqué à perdu " + c + " crédits.");
+		} else {
+			System.out.println("L'attaquant a loupé sa cible...");
+		}
+	}
+
+	@Override
+	public void heal(Fighter f) {
+		/*
+		 * Soigner un combattant allié. Cela consiste à choisir un allié sur la même zone de combat ayant le moins
+		 * de crédits ECTS. Pour le soigné, le nombre de crédits gagnés dépend de la dextérité du soignant et de la
+		 * constitution du soigné.
+		 * Un tirage aléatoire permet de savoir si le soin est réussi. Soit x ∈ [0,100] un nombre tiré aléatoirement.
+		 * Si x ∈ [0 , 20 + 6 ∗ dextérité du soignant] alors le soin est réussi. Dans un tel cas, le soigné engrange
+		 * E(y ∗ (10 + consitution du soigné)) crédits ECTS avec y ∈]0, 0.6] un nombre tiré aléatoirement et
+		 * E(z) la partie entière de z. Le gain obtenu ne peut en aucun cas dépasser la valeur (30 +
+		 * constitution du soigné)
+		 */
+		if (Math.random() * 100 <= 20 + 6 * this.dexterity) {
+			int c = (int) (Math.random() * 0.6 * (10 + f.getConstitution()));
+			if (f.getCredits() + c > 30 + f.getConstitution()) {
+				f.addCredits(30 + f.getConstitution() - f.getCredits());
+			} else {
+				f.addCredits(c);
+			}
+		} else {
+			System.out.println("Le soigtnant a raté son sort.");
+		}
+	}
+
+	@Override
+	public void randomAction(Fighter e, Fighter a) {
+		if (Math.random() > .5) {
+			this.attack(e);
+		} else {
+			this.heal(a);
+		}
 	}
 
 }

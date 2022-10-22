@@ -90,6 +90,14 @@ public class Player {
 		}
 	}
 	
+	/*
+	 * This function allows the players to distribute their remaining fighters on the five different zones.
+	 * Each player will write in the console the fighetrs' id they want to put in the zone.
+	 * If the fighter is available, it will put this fighter in the zone.
+	 * Each zone must have at least 1 fighter from each player.
+	 * The function takes nothing as an input.
+	 * This function returns nothing.
+	 */
 	public void distributeFighters() {
 		String s;
 		String[] i;
