@@ -10,45 +10,20 @@ public class Main {
 		
 		game.initPlayers();
 		Player p1 = game.getFirstPlayer();
-		//Player p2 = game.getSecondPlayer();
+		Player p2 = game.getSecondPlayer();
 		
 		Utils.broadcast("-------------------- Joueur 1 --------------------");
 		Fighter[] temp_p1 = Fighter.generate();
+		p1.chooseReservists(temp_p1);
+		p1.distributeFighters();		
 		
-		System.out.println();
-		System.out.println("Fighters p1");
-		Fighter.sortByInitiative(temp_p1);
-		for (Fighter f : temp_p1) {
-			System.out.println(f);
-		}
+		System.out.println("-------------------- Joueur 2 --------------------");
+		Fighter[] temp_p2 = Fighter.generate();
+		p2.chooseReservists(temp_p2);
+		p2.distributeFighters();
 		
-		
-		// System.out.println("-------------------- Joueur 2 --------------------");
-		// Fighter[] temp_p2 = Fighter.generate();
-		// p2.chooseReservists(temp_p2);
-		
-		
-		/*System.out.println();
-		System.out.println("Réservistes p1");
-		for (Fighter c : p1.getReservists()) {
-			System.out.println(c);
-		}
-		
-		/*System.out.println();
-		System.out.println("disribution p1");
-		p1.distributeFighters();
-		
-		for (Zone z : game.getZones()) {
-			Utils.broadcast(z.getName());
-			for (Fighter f : z.getP1()) {
-				if (f != null) {
-					System.out.println(f);
-				}
-			}
-		}*/
-		
-		
-		System.out.println("Le premier combat va débuter dans : " + game.getZone(game.chooseZone()).getName());
+		Zone z = game.getZone(game.chooseZone());
+		z.fight();
 		
 	}
 	

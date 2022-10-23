@@ -34,15 +34,76 @@ public class Zone {
 		fs[index] = null;
 	}
 	
+	public void removeFighter(Fighter f) {
+		int index;
+		if (Utils.in(f, this.p1)) {
+			index = Fighter.getFighter(f.getId(), this.p1);
+			this.p1[index] = null;
+			for (int j = index; j < Utils.getSize(this.p1); j++) {
+				this.p1[j] = this.p1[j + 1];
+			}
+			this.p1[Utils.getSize(this.p1)] = null;
+		} else {
+			index = Fighter.getFighter(f.getId(), this.p2);
+			this.p2[index] = null;
+			for (int j = index; j < Utils.getSize(this.p2); j++) {
+				this.p2[j] = this.p2[j + 1];
+			}
+			this.p2[Utils.getSize(this.p2)] = null;
+		}
+	}
+	
 	public void fight() {
 		// Sort the two lists by fighter initiative
-		Fighter.sortByInitiative(this.p1);
-		Fighter.sortByInitiative(this.p2);
-		
 		// Have two index (1 for the first player, 1 for the second)
-		// Test if first consitution > second constitution: 
-		// If yes: first do the action and index + 1
-		// If index > list size: index = 0
+		Fighter.sortByInitiative(this.p1);
+		int i_p1 = 0;
+		Fighter.sortByInitiative(this.p2);
+		int i_p2 = 0;
+		
+		Utils.broadcast("Joueur 1: ");
+		for (Fighter f : this.p1) {
+			if (f != null) System.out.println(f);
+		}
+		Utils.broadcast("Joueur 2: ");
+		for (Fighter f : this.p2) {
+			if (f != null) System.out.println(f);
+		}
+		
+		while (Utils.getSize(this.p1) != 0 && Utils.getSize(this.p2) != 0) {
+			// Test if first consitution > second constitution:
+			if (this.p1[i_p1].getInitiative() > this.p2[i_p2].getInitiative()) {
+				Utils.broadcast("Le joueur 1 joue");
+				// If yes: first do the action and index + 1
+				System.out.println("i_p1: " + i_p1);
+				System.out.println("Size p1: " + Utils.getSize(this.p1));
+				this.p1[i_p1].doAction(Fighter.getWeakest(this.p2), Fighter.getWeakest(this.p1), this);
+				// If index > list size: index = 0
+				this.p1[i_p1].removeInitiative();
+				i_p1++;
+				if (i_p1 >= Utils.getSize(this.p1)) i_p1 = 0;
+			} else {
+				Utils.broadcast("Le joueur 2 joue");
+				// else: second do the action and index + 1
+				System.out.println("i_p2: " + i_p2);
+				System.out.println("Size p2: " + Utils.getSize(this.p2));
+				this.p2[i_p2].doAction(Fighter.getWeakest(this.p1), Fighter.getWeakest(this.p2), this);
+				// If index > list size: index = 0
+				this.p2[i_p2].removeInitiative();
+				i_p2++;
+				if (i_p2 >= Utils.getSize(this.p2)) i_p2 = 0;
+			}
+		}
+		
+		Player w;
+		if (Utils.getSize(this.p1) == 0) {
+			w = Main.getGame().getFirstPlayer();
+			System.out.println(w.getName() + " a conquéri la zone " + this.name);
+		} else {
+			w = Main.getGame().getSecondPlayer();
+			System.out.println(w.getName() + " a conquéri la zone " + this.name);
+		}
+		this.winner = w;
 	}
 	
 }

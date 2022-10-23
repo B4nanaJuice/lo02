@@ -31,6 +31,7 @@ public class Fighter implements Strategy {
 	
 	public void removeCredits(int c) { this.credits -= c; }
 	public void addCredits(int c) { this.credits += c; }
+	public void removeInitiative() { this.initiative--; }
 	
 	/*
 	 * This functions allow to the game to get all points given to the fighter.
@@ -310,6 +311,24 @@ public class Fighter implements Strategy {
 		}
 	}
 	
+	/*
+	 * This function allows the user to get the weakest player (in terms of credits).
+	 * This will be used when a fighter attacks or heals someone else.
+	 * The function takes as an input a list of fighters.
+	 * This function returns the weakest fighter.
+	 */
+	public static Fighter getWeakest(Fighter[] fs) {
+		Fighter resp = null;
+		int c = 40;
+		for (int i = 0; i < Utils.getSize(fs); i++) {
+			if (fs[i].getCredits() < c) {
+				resp = fs[i];
+				c = resp.getCredits();
+			}
+		}
+		return resp;
+	}
+	
 	@Override
 	public String toString() {
 		return (this.id + " -> Str: " + this.strength + 
@@ -321,7 +340,7 @@ public class Fighter implements Strategy {
 	}
 
 	@Override
-	public void attack(Fighter f) {
+	public void attack(Fighter f, Zone z) {
 		/*
 		 * Attaquer frontalement. Sur sa zone de combat, l’étudiant lance son gobi à l’ennemi qui a le moins de
 		 * crédits ECTS.
@@ -336,8 +355,15 @@ public class Fighter implements Strategy {
 			int coef = Math.max(0, Math.min(100, 10 * this.strength - 5 * f.getResistance()));
 			int ref = 10;
 			int c = (int) (Math.random() * (1*coef) * ref);
+			if (c > f.getCredits()) {
+				c = f.getCredits();
+			}
 			f.removeCredits(c);
-			System.out.println("Le combattant attaqué à perdu " + c + " crédits.");
+			System.out.println("Le combattant " + f.getId() + " a perdu " + c + " crédits.");
+			System.out.println("Il lui reste " + f.getCredits() + " crédits.");
+			if (f.getCredits() <= 0) {
+				z.removeFighter(f);
+			}
 		} else {
 			System.out.println("L'attaquant a loupé sa cible...");
 		}
@@ -358,21 +384,38 @@ public class Fighter implements Strategy {
 		if (Math.random() * 100 <= 20 + 6 * this.dexterity) {
 			int c = (int) (Math.random() * 0.6 * (10 + f.getConstitution()));
 			if (f.getCredits() + c > 30 + f.getConstitution()) {
-				f.addCredits(30 + f.getConstitution() - f.getCredits());
-			} else {
-				f.addCredits(c);
+				c = 30 + f.getConstitution() - f.getCredits();
 			}
+			f.addCredits(c);
+			System.out.println("Le combattant " + f.getId() + " a gagné " + c + " crédits.");
+			System.out.println("Il a maintenant " + f.getCredits() + " crédits.");
 		} else {
 			System.out.println("Le soigtnant a raté son sort.");
 		}
 	}
 
 	@Override
-	public void randomAction(Fighter e, Fighter a) {
+	public void randomAction(Fighter e, Fighter a, Zone z) {
 		if (Math.random() > .5) {
-			this.attack(e);
+			this.attack(e, z);
 		} else {
 			this.heal(a);
+		}
+	}
+	
+	@Override
+	public void doAction(Fighter e, Fighter	a, Zone z) {
+		System.out.println("Le combattant "+  this.id + " effectue son action (" + this.strategy + ")");
+		switch (this.strategy) {
+		case "a":
+			this.attack(e, z);
+			break;
+		case "h":
+			this.heal(a);
+			break;
+		default:
+			this.randomAction(e, a, z);
+			break;
 		}
 	}
 
