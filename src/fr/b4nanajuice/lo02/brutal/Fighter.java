@@ -302,7 +302,7 @@ public class Fighter implements Strategy {
 		Fighter temp;
 		for (int i = 0; i < Utils.getSize(fs); i++) {
 			for (int j = 0; j < Utils.getSize(fs) - 1; j++) {
-				if (fs[j].getInitiative() > fs[j+1].getInitiative()) {
+				if (fs[j].getInitiative() < fs[j+1].getInitiative()) {
 					temp = fs[j];
 					fs[j] = fs[j+1];
 					fs[j+1] = temp;
@@ -353,7 +353,7 @@ public class Fighter implements Strategy {
 		 */
 		if (Math.random()*100 <= 40 + 3 * this.dexterity) {
 			int coef = Math.max(0, Math.min(100, 10 * this.strength - 5 * f.getResistance()));
-			int ref = 10;
+			int ref = 1;
 			int c = (int) (Math.random() * (1*coef) * ref);
 			if (c > f.getCredits()) {
 				c = f.getCredits();
@@ -390,7 +390,7 @@ public class Fighter implements Strategy {
 			System.out.println("Le combattant " + f.getId() + " a gagné " + c + " crédits.");
 			System.out.println("Il a maintenant " + f.getCredits() + " crédits.");
 		} else {
-			System.out.println("Le soigtnant a raté son sort.");
+			System.out.println("Le soignant a raté son sort.");
 		}
 	}
 

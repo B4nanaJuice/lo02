@@ -53,5 +53,30 @@ public class Game {
 		} while (this.zones[resp].getWinner() != null);
 		return resp;
 	}
+	
+	/*
+	 * This function allows the game to know when a player has 3 zones.
+	 * The player is then the winner of the game.
+	 * The function takes nothing as an input.
+	 * The function return the winning player or null if none of the player wins.
+	 */
+	public Player getWinner() {
+		Player resp = null;
+		int p1_c = 0, p2_c = 0;
+		for (Zone z : this.zones) {
+			if (z.getWinner() == this.getFirstPlayer()) {
+				p1_c++;
+			} else if (z.getWinner() == this.getSecondPlayer()) {
+				p2_c++;
+			}
+		}
+		if (p1_c >= 3) {
+			resp = this.getFirstPlayer();
+		} else if (p2_c >= 3) {
+			resp = this.getSecondPlayer();
+		}
+		
+		return resp;
+	}
 
 }

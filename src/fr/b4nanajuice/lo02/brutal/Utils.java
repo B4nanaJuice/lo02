@@ -90,4 +90,21 @@ public class Utils {
 		}
 		return resp;
 	}
+	
+	/*
+	 * This function allows the user to get the last occurence of an object in an array.
+	 * The function takes as an input the object and the list.
+	 * This function return the index.
+	 */
+	public static int getIndex(Object o, Object[] os) {
+		int resp = -1;
+		for (int i = 0; i < os.length; i++) {
+			if (os[i] != null) {
+				if (os[i].equals(o)) {
+					resp = i;
+				}
+			}
+		}
+		return resp;
+	}
 }
